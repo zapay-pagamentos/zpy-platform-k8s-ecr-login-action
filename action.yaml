@@ -1,0 +1,49 @@
+name: 'ECR Login'
+description: 'Login ECR'
+inputs:
+  aws-access-key-id:  # id of input
+    description: 'AWS access key'
+    required: true
+  aws-secret-access-key:  # id of input
+    description: 'AWS secret key'
+    required: true
+  aws-region:  # id of input
+    description: 'AWS region'
+    required: true
+outputs:
+  registry:
+    description: "ECR Registry"
+    value: ${{ steps.login-ecr.outputs.registry }}
+  user:
+    description: "ECR User"
+    value: ${{ steps.login-ecr.outputs.docker_username_071032557399_dkr_ecr_sa_east_1_amazonaws_com }}
+  pass:
+    description: "ECR Password"
+    value: ${{ steps.ecr.outputs.token }}
+
+
+runs:
+  using: "composite"    
+    ## Configurando as credenciais AWS
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+        mask-aws-account-id: 'no'
+    
+    ## Fazendo login no AWS ECR
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    ## Pegando token de login no ECR para utilizar no job "deploy"
+    - name: Get token to login to Amazon ECR
+      id: ecr
+      uses: PhutureCorp/ecr-login-token@v0.8.0
+      with:
+        registry: ${{ steps.login-ecr.outputs.registry }}
+        username: ${{ inputs.aws-access-key-id }}
+        password: ${{ inputs.aws-secret-access-key }}
+  
