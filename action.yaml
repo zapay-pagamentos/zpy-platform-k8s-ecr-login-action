@@ -23,7 +23,8 @@ outputs:
 
 
 runs:
-  using: "composite"    
+  using: "composite"
+  steps:
     ## Configurando as credenciais AWS
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
