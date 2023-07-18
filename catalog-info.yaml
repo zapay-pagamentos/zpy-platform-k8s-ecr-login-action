@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: zpy-platform-k8s-ecr-login-action
+  description: Github Action to login ECR
+  annotations:
+    github.com/project-slug: zapay-pagamentos/zpy-platform-k8s-ecr-login-action
+spec:
+  type: library
+  lifecycle: production
+  owner: darrell
